@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'enabled' = env(''OPEN_SEARCH_LOG_ENABLED,false)
     'batch' => false,
     'queue' => [
         'enable' => env('LOG_QUEUE_ENABLED',false), 
