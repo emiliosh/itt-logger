@@ -5,14 +5,15 @@ namespace Itt\Logger\Handler;
 
 use Throwable;
 use RuntimeException;
-use OpenSearch\Client;
 use Itt\Logger\Logger;
+use OpenSearch\Client;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Log;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Formatter\FormatterInterface;
-use Monolog\Handler\AbstractProcessingHandler;
 use Itt\Logger\Formatter\OpensearchFormatter;
+use Monolog\Handler\AbstractProcessingHandler;
 use Opensearch\Common\Exceptions\RuntimeException as OpensearchRuntimeException;
 
 class OpensearchHandler extends AbstractProcessingHandler
@@ -107,7 +108,7 @@ class OpensearchHandler extends AbstractProcessingHandler
             }
         } catch (Throwable $e) {
             if (!$this->options['ignore_error']) {
-                throw new RuntimeException('Error sending messages to Opensearch', 0, $e);
+                Log::channel('opensearch_log')->error('Error sending messages to Opensearch' . $e . PHP_EOL);
             }
         }
     }
