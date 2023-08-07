@@ -3,7 +3,7 @@
 return [
     'batch' => false,
     'queue' => [
-        'enable' => false,
+        'enable' => env('LOG_QUEUE_ENABLED',false), 
         'name' => env('LOG_QUEUE_NAME', 'logging')
     ],
     'level' => 200,
