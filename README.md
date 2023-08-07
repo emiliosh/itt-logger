@@ -1,5 +1,7 @@
 # Laravel log driver for opensearch
 
+This is a fork of https://github.com/betterde/logger but uses https://opensearch.org/docs/1.2/clients/php/ as a client
+
 # Installation
 
 ```bash
