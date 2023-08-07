@@ -18,18 +18,20 @@ class LoggerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton('itt.logger', function () {
-            $client = new ClientBuilder();
-            $client->setHosts(config('ittlogger.opensearch.hosts'));
-            $client->setRetries(config('ittlogger.opensearch.retries'));
-            $client->setBasicAuthentication('admin', 'admin');
-            $client->setSSLVerification(false);
-            $client->setConnectionParams(config('ittlogger.opensearch.params'));
-            $client = $client->build();
-            // dd($client->info());
-            return new Logger('opensearch', [
-                new OpensearchHandler($client, config('ittlogger.options'), config('ittlogger.level'), config('ittlogger.bubble'))
-            ]);
-        });
+        if (config('ittlogger.enabled')) {
+            $this->app->singleton('itt.logger', function () {
+                $client = new ClientBuilder();
+                $client->setHosts(config('ittlogger.opensearch.hosts'));
+                $client->setRetries(config('ittlogger.opensearch.retries'));
+                $client->setBasicAuthentication('admin', 'admin');
+                $client->setSSLVerification(false);
+                $client->setConnectionParams(config('ittlogger.opensearch.params'));
+                $client = $client->build();
+                // dd($client->info());
+                return new Logger('opensearch', [
+                    new OpensearchHandler($client, config('ittlogger.options'), config('ittlogger.level'), config('ittlogger.bubble'))
+                ]);
+            });
+        }
     }
 }
