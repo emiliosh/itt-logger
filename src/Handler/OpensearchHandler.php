@@ -82,33 +82,35 @@ class OpensearchHandler extends AbstractProcessingHandler
 
     protected function bulkSend(array $records): void
     {
-        try {
-            $params = [
-                'body' => [],
-            ];
-
-            foreach ($records as $record) {
-                $index = [];
-                $index['_index'] = $record['_index'];
-                if (Arr::has($record, '_type') && strlen($record['_type']) > 0) {
-                    $index['_type'] = $record['_type'];
-                }
-                $params['body'][] = [
-                    'index' => $index
+        if (config('ittlogger.enabled')) {
+            try {
+                $params = [
+                    'body' => [],
                 ];
-                unset($record['_index'], $record['_type']);
 
-                $params['body'][] = $record;
-            }
+                foreach ($records as $record) {
+                    $index = [];
+                    $index['_index'] = $record['_index'];
+                    if (Arr::has($record, '_type') && strlen($record['_type']) > 0) {
+                        $index['_type'] = $record['_type'];
+                    }
+                    $params['body'][] = [
+                        'index' => $index
+                    ];
+                    unset($record['_index'], $record['_type']);
 
-            $responses = $this->client->bulk($params);
+                    $params['body'][] = $record;
+                }
 
-            if ($responses['errors'] === true) {
-                throw new OpensearchRuntimeException('Opensearch returned error for one of the records');
-            }
-        } catch (Throwable $e) {
-            if (!$this->options['ignore_error']) {
-                Log::channel('opensearch_log')->error('Error sending messages to Opensearch' . $e . PHP_EOL);
+                $responses = $this->client->bulk($params);
+
+                if ($responses['errors'] === true) {
+                    throw new OpensearchRuntimeException('Opensearch returned error for one of the records');
+                }
+            } catch (Throwable $e) {
+                if (!$this->options['ignore_error']) {
+                    throw new RuntimeException('Error sending messages to Opensearch', 0, $e);
+                }
             }
         }
     }
