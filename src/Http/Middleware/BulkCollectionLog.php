@@ -18,20 +18,19 @@ class BulkCollectionLog
 
     public function terminate($request, $response)
     {
-        /**
-         * @var Logger $logger
-         */
-        $logger = app('itt.logger');
-        if (empty($logger->records)) {
-            return;
-        }
+        if (config('ittlogger.enabled')) {
+            $logger = app('itt.logger');
+            if (empty($logger->records)) {
+                return;
+            }
 
-        if (config('ittlogger.queue.enable')) {
-            SendDocuments::dispatch($logger->records)->onQueue(config('ittlogger.queue.name'));
-        } else {
-            $handlers = $logger->getHandlers();
-            $handler = reset($handlers);
-            $handler->handleBatch($logger->records);
+            if (config('ittlogger.queue.enable')) {
+                SendDocuments::dispatch($logger->records)->onQueue(config('ittlogger.queue.name'));
+            } else {
+                $handlers = $logger->getHandlers();
+                $handler = reset($handlers);
+                $handler->handleBatch($logger->records);
+            }
         }
     }
 }
