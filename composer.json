@@ -1,5 +1,5 @@
 {
-    "name": "itt/logger",
+    "name": "emiliosh/logger",
     "description": "Opensearch logger handler",
     "keywords": ["Opensearch", "Logger"],
     "type": "library",
